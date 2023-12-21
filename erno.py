@@ -4,6 +4,7 @@ import csv
 import discord
 from discord.ext import tasks
 from constants import CHANNEL_ID, TOKEN
+import os.path
 
 def get_location(comp):
     return comp.find(attrs={'class':'location'}).text.strip()
@@ -18,7 +19,7 @@ def get_date(comp):
     return comp.find(attrs={'class':'date'}).text.strip()
 
 def announcement(comp):
-    return f'''Hey everyone, the "*{comp['name']}*" competition has been posted on the WCA page! Here are the details: 
+    return f'''Hey @everyone, the "*{comp['name']}*" competition has been posted on the WCA page! Here are the details: 
 
         **Date**: {comp['date']}, 
         **Location**: {comp['location']}
@@ -73,7 +74,8 @@ class MyClient(discord.Client):
         self.slow_count.start()
     
 def main():
-    open(COMPS_URL, "x")
+    if not os.path.exists(COMPS_URL):
+        open(COMPS_URL, "x")
     intents = discord.Intents.default()
     intents.messages = True
     client = MyClient(intents=intents)
